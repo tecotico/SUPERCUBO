@@ -184,7 +184,7 @@ def pos12bitshex(pos):
     return str.upper(poshex[2:]).zfill(3)
     
 #------------------------------
-def mover_a_posicion(np):
+def mover_a_posicion_orig(np):
     cmdCS100 = 'J' + pos12bitshex(np) + 'P1I4I0P0?'
     logging.info('CS100: {:4d} - {:s}'.format(np, cmdCS100))
     r = writeCMD2(cmdCS100)
@@ -200,12 +200,35 @@ def mover_a_posicion(np):
     #logging.info('CS100: -> {:s}'.format(r.decode()))
     #print('mover a posicion: ', r)
     
+#------------------------------
+def mover_a_posicion(eje, np):
+    if eje == 'x':
+        cmdCS100 = 'J' + pos12bitshex(np) + 'P1I1I0P0?'
+    if eje == 'y':
+        cmdCS100 = 'J' + pos12bitshex(np) + 'P1I2I0P0?'
+    if eje == 'z':
+        cmdCS100 = 'J' + pos12bitshex(np) + 'P1I4I0P0?'
+    logging.info('CS100: {:4d} - {:s}'.format(np, cmdCS100))
+    r = writeCMD2(cmdCS100)
+    time.sleep(0.5)
+    NOR = int(chr(r[1])) & 2
+    if NOR != 2:
+        print('CS100: OUT OF RANGE indication')
+        print('Es necesario cerrar el lazo de control (O0)')
+        print('---> Origen de barrido: ', ob)
+        print('---> Paso de barrido: ', pb)
+        print('---> Canal: ', i)
+        sys.exit(0)
     
 #------------------------------
 parser = argparse.ArgumentParser()
 
-parser.add_argument('-ob', '--origen_barrido', dest='origen_barrido')
-parser.add_argument('-pb', '--paso_barrido', dest='paso_barrido')
+# el eje de barrido usual es z
+parser.add_argument('-ob', '--origen_barrido', dest='origen_barrido', help='Origen del barrido en el eje Z')
+parser.add_argument('-pb', '--paso_barrido', dest='paso_barrido', help='Paso de barrido en el eje Z')
+# los ejes x, y son para los valores de paralelismo
+parser.add_argument('-x', '--origen_barrido_x', dest='origen_barrido_x', help='Origen del barrido en el eje X')
+parser.add_argument('-y', '--origen_barrido_y', dest='origen_barrido_y', help='Origen del barrido en el eje Y')
 parser.add_argument('-n', '--ncan', dest='ncan', help='Numero de canales')
 parser.add_argument('-pfx', '--prefix', dest='prefix', help='Prefijo para las imagenes')
 parser.add_argument('-t', '--texp', dest='texp', help='Tiempo de exposision (segs)')
@@ -246,13 +269,25 @@ else:
     
 ob = int(p.origen_barrido)
 pb = int(p.paso_barrido)
-nc = int(p.ncan)
+if p.origen_barrido_x != None: obx = int(p.origen_barrido_x)
+if p.origen_barrido_y != None: oby = int(p.origen_barrido_y)
+
+nc = int(p.ncan)  
+
 pfx = p.prefix
 texp = float(p.texp)
 
 if  ob < -2048 or 2047 < ob:
-    print('CS100: Origen de barrido fuera de limites [-2048, 2047]: ', ob)
-    sys.exit(0)  
+    print('CS100: Origen de barrido fuera de limites [-2048, 2047] en el eje Z: ', ob)
+    sys.exit(0)
+    
+if  obx < -2048 or 2047 < obx:
+    print('CS100: Origen de barrido fuera de limites [-2048, 2047] en el eje X: ', obx)
+    sys.exit(0)
+    
+if  oby < -2048 or 2047 < oby:
+    print('CS100: Origen de barrido fuera de limites [-2048, 2047] en el eje Y: ', oby)
+    sys.exit(0)
 
 if p.origen:
     logging.info('CS100: moviendo al origen')
@@ -306,6 +341,12 @@ while not(ccd_exposure):
     
 #------------------------------
 
+if p.origen_barrido_x != None: 
+    mover_a_posicion('x', obx)
+    
+if p.origen_barrido_y != None: 
+    mover_a_posicion('y', oby)
+
 for i in range(nc):
     newpos = ob + i * pb
     if newpos < -2048 or 2047 < newpos:
@@ -317,7 +358,7 @@ for i in range(nc):
     
     print('canal: {:2d} - pos Z: {:4d}'.format(i, newpos))
     #esta linea se deben descomentar cuando se usa el CS100
-    #mover_a_posicion(newpos)
+    #mover_a_posicion('z', newpos)
     #adquisicion SBIG
     blobEvent=threading.Event()
     blobEvent.clear()
