@@ -269,9 +269,6 @@ else:
     
 ob = int(p.origen_barrido)
 pb = int(p.paso_barrido)
-if p.origen_barrido_x != None: obx = int(p.origen_barrido_x)
-if p.origen_barrido_y != None: oby = int(p.origen_barrido_y)
-
 nc = int(p.ncan)  
 
 pfx = p.prefix
@@ -281,13 +278,17 @@ if  ob < -2048 or 2047 < ob:
     print('CS100: Origen de barrido fuera de limites [-2048, 2047] en el eje Z: ', ob)
     sys.exit(0)
     
-if  obx < -2048 or 2047 < obx:
-    print('CS100: Origen de barrido fuera de limites [-2048, 2047] en el eje X: ', obx)
-    sys.exit(0)
-    
-if  oby < -2048 or 2047 < oby:
-    print('CS100: Origen de barrido fuera de limites [-2048, 2047] en el eje Y: ', oby)
-    sys.exit(0)
+if p.origen_barrido_x != None: 
+    obx = int(p.origen_barrido_x)
+    if  obx < -2048 or 2047 < obx:
+        print('CS100: Origen de barrido fuera de limites [-2048, 2047] en el eje X: ', obx)
+        sys.exit(0)
+
+if p.origen_barrido_y != None: 
+    oby = int(p.origen_barrido_y)    
+    if  oby < -2048 or 2047 < oby:
+        print('CS100: Origen de barrido fuera de limites [-2048, 2047] en el eje Y: ', oby)
+        sys.exit(0)
 
 if p.origen:
     logging.info('CS100: moviendo al origen')
@@ -337,8 +338,8 @@ while not(ccd_ccd1):
 ccd_exposure=device_ccd.getNumber("CCD_EXPOSURE")
 while not(ccd_exposure):
     time.sleep(0.5)
-    ccd_exposure=device_ccd.getNumber("CCD_EXPOSURE")
-    
+    ccd_exposure=device_ccd.getNumber("CCD_EXPOSURE")   
+
 #------------------------------
 
 if p.origen_barrido_x != None: 
