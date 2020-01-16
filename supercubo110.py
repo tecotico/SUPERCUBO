@@ -87,7 +87,7 @@ class IndiClient(PyIndi.BaseClient):
 #------------------------------
 def usage():
     print('Uso:')
-    print('./supercubo101.py -ob origen_barrido -pb paso_barrido -n num_canales -prefix prefijo_imgs -texp tiempo_exp')
+    print('./supercubo110.py -ob origen_barrido -pb paso_barrido -n num_canales -pfx prefijo_imgs -t tiempo_exp')
 
 #------------------------------
 def verifica_controlCS100():
