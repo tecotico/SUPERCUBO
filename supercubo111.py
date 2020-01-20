@@ -7,16 +7,12 @@
 
 import argparse
 import sys
-#import serial
 import time
 import logging
-#import PyIndi
 import threading
 from astropy.io import fits
 import indiclient
 import cs100client
-
-serialDEV = '/dev/ttyACM0'
         
 #------------------------------
 parser = argparse.ArgumentParser()
@@ -40,7 +36,7 @@ if p.verb:
     #logging.basicConfig(level=logging.INFO, format='%(name)s - %(levelname)s - %(message)s')
     logging.basicConfig(level=logging.INFO, format='linea: %(lineno)d %(message)s')
 
-cs100 = cs100client.CS100client()
+cs100 = cs100client.CS100client('/dev/ttyACM0')
 cs100.verifica_parametros(p)
     
 ob = int(p.origen_barrido)

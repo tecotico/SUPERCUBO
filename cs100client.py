@@ -5,13 +5,16 @@ import serial
 import time
 import logging
 
-serialDEV = '/dev/ttyACM0'
-
 #------------------------------
 class CS100client:
     
-    port='/dev/ttyACM0'
+    serialDEV=None
     
+    
+    def __init__(self, port):
+        serialDEV = port
+    
+    #------------------------------
     def usage():
         print('Parametros minimos:')
         print('./supercubo.py -ob origen_barrido -pb paso_barrido -n num_canales -pfx prefijo_imgs -t tiempo_exp')
@@ -163,6 +166,8 @@ class CS100client:
             print('---> Paso de barrido: ', pb)
             print('---> Canal: ', i)
             sys.exit(0)
+        #logging.info('CS100: -> {:s}'.format(r.decode()))
+        #print('mover a posicion: ', r)
             
     #------------------------------
     def verifica_parametros(self, p):
