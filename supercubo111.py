@@ -17,15 +17,16 @@ import cs100client
 #------------------------------
 parser = argparse.ArgumentParser()
 
+requiredNamed = parser.add_argument_group('required arguments')
 # el eje de barrido usual es z
-parser.add_argument('-ob', '--origen_barrido', dest='origen_barrido', help='Origen del barrido en el eje Z')
-parser.add_argument('-pb', '--paso_barrido', dest='paso_barrido', help='Paso de barrido en el eje Z')
+requiredNamed.add_argument('-ob', '--origen_barrido', required=True, dest='origen_barrido', help='Origen del barrido en el eje Z')
+requiredNamed.add_argument('-pb', '--paso_barrido', dest='paso_barrido', help='Paso de barrido en el eje Z', required=True)
+requiredNamed.add_argument('-n', '--ncan', dest='ncan', help='Numero de canales', required=True)
+requiredNamed.add_argument('-pfx', '--prefix', dest='prefix', help='Prefijo para las imagenes', required=True)
+requiredNamed.add_argument('-t', '--texp', dest='texp', help='Tiempo de exposision (segs)', required=True)
 # los ejes x, y son para los valores de paralelismo
 parser.add_argument('-x', '--origen_barrido_x', dest='origen_barrido_x', help='Origen del barrido en el eje X')
 parser.add_argument('-y', '--origen_barrido_y', dest='origen_barrido_y', help='Origen del barrido en el eje Y')
-parser.add_argument('-n', '--ncan', dest='ncan', help='Numero de canales')
-parser.add_argument('-pfx', '--prefix', dest='prefix', help='Prefijo para las imagenes')
-parser.add_argument('-t', '--texp', dest='texp', help='Tiempo de exposision (segs)')
 parser.add_argument('-v', '--verbose', action='store_true', default=False, dest='verb', help='Despliega mensajes')
 parser.add_argument('--inicializa', action='store_true', default=False, dest='init', help='Inicializa el CS100 antes del iniciar el supercubo')
 parser.add_argument('--origen', action='store_true', default=False, dest='origen', help='Manda a Z=0 antes de iniciar y despues de terminar el supercubo')
