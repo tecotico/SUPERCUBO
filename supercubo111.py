@@ -84,7 +84,7 @@ if p.origen:
     
 #-----------------------------
 # SBIG
-# el cliente se conecta al localhost, pto 7624    
+# el cliente se conecta al localhost, pto 7624
 indiclient=indiclient.IndiClient()
 indiclient.setServer("localhost",7624)
 
@@ -108,11 +108,11 @@ for i in range(nc):
     #esta linea se deben descomentar cuando se usa el CS100
     #cs100.mover_a_posicion('z', newpos)
     #adquisicion SBIG
-    blobEvent=threading.Event()
-    blobEvent.clear()
+    indiclient.blobEvent=threading.Event()
+    indiclient.blobEvent.clear()
     indiclient.ccd_exposure[0].value = texp
     indiclient.sendNewNumber(indiclient.ccd_exposure)
-    blobEvent.wait()
+    indiclient.blobEvent.wait()
     
     img=indiclient.ccd_ccd1[0].getblobdata()
     filename = pfx+str(i).zfill(3)+'.fits'

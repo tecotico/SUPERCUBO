@@ -9,6 +9,8 @@ import threading
 #------------------------------
 class IndiClient(PyIndi.BaseClient):
     
+    blobEvent = None
+    
     def __init__(self):
         super(IndiClient, self).__init__()
     def newDevice(self, d):
@@ -19,7 +21,7 @@ class IndiClient(PyIndi.BaseClient):
         pass
     def newBLOB(self, bp):
         global blobEvent
-        blobEvent.set()
+        self.blobEvent.set()
         pass
     def newSwitch(self, svp):
         pass

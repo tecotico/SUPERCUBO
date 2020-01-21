@@ -44,7 +44,7 @@ class CS100client:
 
         cs100.close()
         
-        # regresa una trupla (bool1, bool2)
+        # regresa una tupla (bool1, bool2)
         # bool1 = not out of range (true) out of range (false)
         # bool2 = operate (true) balance (false)
         return bool1, bool2
@@ -131,6 +131,7 @@ class CS100client:
         return str.upper(poshex[2:]).zfill(3)
     
     #------------------------------
+    # solo mueve el eje Z
     def mover_a_posicion_orig(np):
         cmdCS100 = 'J' + pos12bitshex(np) + 'P1I4I0P0?'
         logging.info('CS100: {:4d} - {:s}'.format(np, cmdCS100))
